@@ -1,0 +1,155 @@
+package com.example.quizapp;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    TextView questionText, scoreText;
+    Button opt1, opt2, opt3, opt4, nextBtn;
+
+    int score = 0;
+    int currentQuestion = 0;
+
+    String[] questions = {
+            "What is the capital of India?",
+            "Who wrote the National Anthem of India?",
+            "Which planet is known as the Red Planet?",
+            "Which is the largest ocean in the world?"
+    };
+
+    String[][] options = {
+            {"Mumbai", "Delhi", "Chennai", "Kolkata"},
+            {"Rabindranath Tagore", "Mahatma Gandhi", "Jawaharlal Nehru", "Subhash Chandra Bose"},
+            {"Earth", "Mars", "Jupiter", "Venus"},
+            {"Indian Ocean", "Arctic Ocean", "Atlantic Ocean", "Pacific Ocean"}
+    };
+
+    String[] correctAnswers = {"Delhi", "Rabindranath Tagore", "Mars", "Pacific Ocean"};
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        
+        questionText = findViewById(R.id.questionText);
+        scoreText = findViewById(R.id.scoreText);
+        opt1 = findViewById(R.id.opt1);
+        opt2 = findViewById(R.id.opt2);
+        opt3 = findViewById(R.id.opt3);
+        opt4 = findViewById(R.id.opt4);
+        nextBtn = findViewById(R.id.nextBtn);
+
+        loadQuestion();
+
+        View.OnClickListener answerClick = v -> {
+            Button clickedBtn = (Button) v;
+            String selected = clickedBtn.getText().toString();
+
+            if (selected.equals(correctAnswers[currentQuestion])) {
+                score++;
+                Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Wrong! Answer: " + correctAnswers[currentQuestion], Toast.LENGTH_SHORT).show();
+            }
+
+            opt1.setEnabled(false);
+            opt2.setEnabled(false);
+            opt3.setEnabled(false);
+            opt4.setEnabled(false);
+        };
+
+        opt1.setOnClickListener(answerClick);
+        opt2.setOnClickListener(answerClick);
+        opt3.setOnClickListener(answerClick);
+        opt4.setOnClickListener(answerClick);
+
+        nextBtn.setOnClickListener(v -> {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                questionText.setText("Quiz Finished! Your score: " + score + "/" + questions.length);
+                opt1.setVisibility(View.GONE);
+                opt2.setVisibility(View.GONE);
+                opt3.setVisibility(View.GONE);
+                opt4.setVisibility(View.GONE);
+                nextBtn.setVisibility(View.GONE);
+                scoreText.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    void loadQuestion() {
+        questionText.setText(questions[currentQuestion]);
+        opt1.setText(options[currentQuestion][0]);
+        opt2.setText(options[currentQuestion][1]);
+        opt3.setText(options[currentQuestion][2]);
+        opt4.setText(options[currentQuestion][3]);
+        scoreText.setText("Score: " + score);
+
+        opt1.setEnabled(true);
+        opt2.setEnabled(true);
+        opt3.setEnabled(true);
+        opt4.setEnabled(true);
+    }
+}
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" 
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/scoreText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Score: 0"
+        android:textSize="20sp"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:id="@+id/questionText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Question here"
+        android:textSize="24sp"
+        android:layout_marginBottom="24dp"
+        android:gravity="center"/>
+
+    <Button android:id="@+id/opt1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Option 1"
+        android:layout_marginBottom="12dp"/>
+
+    <Button android:id="@+id/opt2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Option 2"
+        android:layout_marginBottom="12dp"/>
+
+    <Button android:id="@+id/opt3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Option 3"
+        android:layout_marginBottom="12dp"/>
+
+    <Button android:id="@+id/opt4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Option 4"
+        android:layout_marginBottom="24dp"/>
+
+    <Button android:id="@+id/nextBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next Question"/>
+</LinearLayout>
